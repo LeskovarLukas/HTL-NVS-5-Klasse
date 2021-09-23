@@ -15,9 +15,9 @@ int main(int argc, char* argv[]) {
     std::chrono::milliseconds sleeptime(500);
 
     while (true) {
-        std::cout << argv[1] << std::endl;
+        std::cout << argv[1] << std::flush;
         std::this_thread::sleep_for(sleeptime);
     }
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }

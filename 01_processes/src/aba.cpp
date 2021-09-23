@@ -12,28 +12,28 @@ void startChildLoop(char, std::chrono::milliseconds);
 
 int main() {
     pid_t pid{fork()};
-    char charToPrint;
     std::chrono::milliseconds sleeptime(500);
 
 
     if (pid == 0) {
-        charToPrint = 'A';
-        startChildLoop(charToPrint, sleeptime);
+        if (execl("./charout", "charout", "A", nullptr)) {
+            std::cerr << "\nstarting charout failed: No such file or directory" << std::endl;
+            exit(EXIT_FAILURE);
+        }
     } else {
-        charToPrint = 'B';
         std::cout << "Child PID: " << pid << std::endl;
 
         for (int i = 0; i < 6; i++) {
-            std::cout << charToPrint << std::flush;
+            std::cout << "B" << std::flush;
             std::this_thread::sleep_for(sleeptime);
         }
         kill(pid, SIGKILL);
         int status;
         waitpid(pid, &status, 0);
-        std::cout << "\nChild finished with exit code: " << status << std::endl;
+        std::cout << "\nChild finished with exit code: " << WIFEXITED(status) << std::endl;
     }
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }
 
 void startChildLoop(char charToPrint, std::chrono::milliseconds sleeptime) {

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <csignal>
+#include <cstdlib>
 
 void startCharout(char);
 
@@ -13,13 +14,14 @@ void killSubprocess(pid_t);
 int main() {
     pid_t pidA{fork()};
 
+
     if (pidA == 0) {
-        startCharout('A');
+        startCharout(*getenv("ABA_LETTER_A"));
     } else {
         pid_t pidB{fork()};
 
         if (pidB == 0) {
-            startCharout('B');
+            startCharout(*getenv("ABA_LETTER_B"));
         } else {
             std::cout << "waiting for 3 seconds" << std::endl;
             sleep(3);
@@ -45,5 +47,5 @@ void killSubprocess(pid_t pid) {
     kill(pid, SIGKILL);
     int status;
     waitpid(pid, &status, 0);
-    std::cout << "\nChild finished with exit code: " << WIFEXITED(status);
+    std::cout << "\nChild finished with exit code: " << WIFEXITED(status) << std::flush;
 }

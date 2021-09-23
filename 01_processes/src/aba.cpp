@@ -25,6 +25,8 @@ int main() {
         } else {
             std::cout << "waiting for 3 seconds" << std::endl;
             sleep(3);
+            std::cout << "\nkilling both subprocesses with pids " << pidA << " and " << pidB << "\n";
+            std::cout << "waiting for both subprocesses to be dead";
             killSubprocess(pidA);
             killSubprocess(pidB);
         }
@@ -38,7 +40,7 @@ void startCharout(char charToPrint) {
     sprintf(param, "%c", charToPrint);
 
     if (execl("./charout", "charout", param, nullptr)) {
-        std::cerr << "\nstarting charout failed: No such file or directory" << std::endl;
+        std::cerr << "starting charout failed: No such file or directory" << std::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -47,5 +49,5 @@ void killSubprocess(pid_t pid) {
     kill(pid, SIGKILL);
     int status;
     waitpid(pid, &status, 0);
-    std::cout << "\nChild finished with exit code: " << WIFEXITED(status) << std::flush;
+    std::cout << "\nsubprocess " << pid << " exited with " << WIFEXITED(status) << std::flush;
 }

@@ -4,12 +4,15 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <chrono>
+#include <thread>
 
-void startLoop(char);
+void startLoop(char, std::chrono::milliseconds);
 
 int main() {
     pid_t pid{fork()};
     char charToPrint;
+    std::chrono::milliseconds sleeptime(500);
 
 
     if (pid == 0) {
@@ -17,14 +20,14 @@ int main() {
     } else {
         charToPrint = 'B';
     }
-    startLoop(charToPrint);
+    startLoop(charToPrint, sleeptime);
 
     return 0;
 }
 
-void startLoop(char charToPrint) {
+void startLoop(char charToPrint, std::chrono::milliseconds sleeptime) {
     while (true) {
         std::cout << charToPrint << std::flush;
-        usleep(500000);
+        std::this_thread::sleep_for(sleeptime);
     }
 }

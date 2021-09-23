@@ -6,8 +6,9 @@
 #include <unistd.h>
 #include <chrono>
 #include <thread>
+#include <csignal>
 
-void startLoop(char, std::chrono::milliseconds);
+void startChildLoop(char, std::chrono::milliseconds);
 
 int main() {
     pid_t pid{fork()};
@@ -17,15 +18,23 @@ int main() {
 
     if (pid == 0) {
         charToPrint = 'A';
+        startChildLoop(charToPrint, sleeptime);
     } else {
         charToPrint = 'B';
+        std::cout << "Child PID: " << pid << std::endl;
+
+        for (int i = 0; i < 6; i++) {
+            std::cout << charToPrint << std::flush;
+            std::this_thread::sleep_for(sleeptime);
+        }
+        kill(pid, SIGKILL);
+        //sleep(10);
     }
-    startLoop(charToPrint, sleeptime);
 
     return 0;
 }
 
-void startLoop(char charToPrint, std::chrono::milliseconds sleeptime) {
+void startChildLoop(char charToPrint, std::chrono::milliseconds sleeptime) {
     while (true) {
         std::cout << charToPrint << std::flush;
         std::this_thread::sleep_for(sleeptime);

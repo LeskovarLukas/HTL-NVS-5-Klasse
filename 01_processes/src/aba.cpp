@@ -4,41 +4,46 @@
 
 #include <iostream>
 #include <unistd.h>
-#include <chrono>
-#include <thread>
 #include <csignal>
 
-void startChildLoop(char, std::chrono::milliseconds);
+void startCharout(char);
+
+void killSubprocess(pid_t);
 
 int main() {
-    pid_t pid{fork()};
-    std::chrono::milliseconds sleeptime(500);
+    pid_t pidA{fork()};
 
-
-    if (pid == 0) {
-        if (execl("./charout", "charout", "A", nullptr)) {
-            std::cerr << "\nstarting charout failed: No such file or directory" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+    if (pidA == 0) {
+        startCharout('A');
     } else {
-        std::cout << "Child PID: " << pid << std::endl;
+        pid_t pidB{fork()};
 
-        for (int i = 0; i < 6; i++) {
-            std::cout << "B" << std::flush;
-            std::this_thread::sleep_for(sleeptime);
+        if (pidB == 0) {
+            startCharout('B');
+        } else {
+            std::cout << "waiting for 3 seconds" << std::endl;
+            sleep(3);
+            killSubprocess(pidA);
+            killSubprocess(pidB);
         }
-        kill(pid, SIGKILL);
-        int status;
-        waitpid(pid, &status, 0);
-        std::cout << "\nChild finished with exit code: " << WIFEXITED(status) << std::endl;
     }
 
     exit(EXIT_SUCCESS);
 }
 
-void startChildLoop(char charToPrint, std::chrono::milliseconds sleeptime) {
-    while (true) {
-        std::cout << charToPrint << std::flush;
-        std::this_thread::sleep_for(sleeptime);
+void startCharout(char charToPrint) {
+    char param[2];
+    sprintf(param, "%c", charToPrint);
+
+    if (execl("./charout", "charout", param, nullptr)) {
+        std::cerr << "\nstarting charout failed: No such file or directory" << std::endl;
+        exit(EXIT_FAILURE);
     }
+}
+
+void killSubprocess(pid_t pid) {
+    kill(pid, SIGKILL);
+    int status;
+    waitpid(pid, &status, 0);
+    std::cout << "\nChild finished with exit code: " << WIFEXITED(status);
 }

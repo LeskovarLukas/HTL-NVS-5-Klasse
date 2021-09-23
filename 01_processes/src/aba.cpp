@@ -5,20 +5,26 @@
 #include <iostream>
 #include <unistd.h>
 
+void startLoop(char);
+
 int main() {
     pid_t pid{fork()};
+    char charToPrint;
+
 
     if (pid == 0) {
-        do {
-            std::cout << "B" << std::flush;
-            usleep(500000);
-        } while (true);
+        charToPrint = 'A';
     } else {
-        do {
-            std::cout << "A" << std::flush;
-            usleep(500000);
-        } while (true);
+        charToPrint = 'B';
     }
+    startLoop(charToPrint);
 
     return 0;
+}
+
+void startLoop(char charToPrint) {
+    while (true) {
+        std::cout << charToPrint << std::flush;
+        usleep(500000);
+    }
 }

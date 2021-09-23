@@ -28,7 +28,9 @@ int main() {
             std::this_thread::sleep_for(sleeptime);
         }
         kill(pid, SIGKILL);
-        //sleep(10);
+        int status;
+        waitpid(pid, &status, 0);
+        std::cout << "\nChild finished with exit code: " << status << std::endl;
     }
 
     return 0;

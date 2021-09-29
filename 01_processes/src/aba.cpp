@@ -7,21 +7,20 @@
 #include <csignal>
 #include <cstdlib>
 
-void startCharout(char);
+void startCharout(const char*);
 
 void killSubprocess(pid_t);
 
 int main() {
     pid_t pidA{fork()};
 
-
     if (pidA == 0) {
-        startCharout(*getenv("ABA_LETTER_A"));
+        startCharout(getenv("ABA_LETTER_A"));
     } else {
         pid_t pidB{fork()};
 
         if (pidB == 0) {
-            startCharout(*getenv("ABA_LETTER_B"));
+            startCharout(getenv("ABA_LETTER_B"));
         } else {
             std::cout << "waiting for 3 seconds" << std::endl;
             sleep(3);
@@ -35,11 +34,12 @@ int main() {
     exit(EXIT_SUCCESS);
 }
 
-void startCharout(char charToPrint) {
-    char param[2];
-    sprintf(param, "%c", charToPrint);
-
-    if (execl("./charout", "charout", param, nullptr)) {
+void startCharout(const char* strToPrint) {
+    if (strToPrint == nullptr) {
+        std::cerr << "starting charout failed: Nothing to print" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    if (execl("./charout", "charout", strToPrint, nullptr)) {
         std::cerr << "starting charout failed: No such file or directory" << std::endl;
         exit(EXIT_FAILURE);
     }

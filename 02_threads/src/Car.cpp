@@ -4,19 +4,21 @@
 
 #include <iostream>
 #include <thread>
+#include <utility>
 #include "include/Car.h"
 
 void Car::driveLaps() {
     using namespace std::literals;
     int lapCount{};
     while (true) {
+        std::string output = std::to_string(++lapCount) + " " + this->carType;
         std::this_thread::sleep_for(1s);
-        std::cout << ++lapCount << " " << this->carType << std::endl;
+        std::cout << output << std::endl;
     }
 }
 
 Car::Car(std::string carType) {
-    this->carType = carType;
+    this->carType = std::move(carType);
 }
 
 void Car::operator()() {

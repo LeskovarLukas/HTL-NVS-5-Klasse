@@ -14,17 +14,18 @@
 void Car::driveLaps() {
     using namespace std::literals;
 
-    int lapCount{};
     std::random_device rd;
     std::mt19937 gen{rd()};
     std::uniform_real_distribution<> dis{1, 10};
     std::ostringstream buffer;
     int waitTime;
 
+    buffer << std::setprecision(3);
 
-    while (true) {
+    for (int lap = 0; lap < 10; lap++) {
         waitTime = dis(gen) * 1000;
-        buffer << std::setprecision(3) << lapCount++ << " " << this->carType << ": " << waitTime / 1000.0 << "s\n";
+        totalTime += waitTime;
+        buffer << lap << " " << this->carType << ": " << waitTime / 1000.0 << "s\n";
 
         std::this_thread::sleep_for(std::chrono::milliseconds{waitTime});
         std::cout << buffer.str() << std::flush;
@@ -38,4 +39,12 @@ Car::Car(std::string carType) {
 
 void Car::operator()() {
     driveLaps();
+}
+
+int Car::getTotalTime() {
+    return this->totalTime;
+}
+
+std::string Car::toString() {
+    return this->carType;
 }

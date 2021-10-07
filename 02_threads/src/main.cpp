@@ -11,24 +11,24 @@ void hyundai_i10(int& totalTime);
 
 
 int main() {
-    int car1Time{};
-    std::thread car1{hyundai_i10, std::ref(car1Time)};
+    int hyundaiTime{};
+    std::thread hyundai_thread{hyundai_i10, std::ref(hyundaiTime)};
 
-    int car2Time;
+    int volvoTime;
     Car volvo = Car("Volvo V40");
-    std::thread car2{volvo};
+    std::thread volvoThread{std::ref(volvo)};
 
-    car1.join();
-    car2.join();
-    car2Time = volvo.getTotalTime();
+    hyundai_thread.join();
+    volvoThread.join();
+    volvoTime = volvo.getTotalTime();
 
     std::cout << std::setprecision(3);
-    if (car1Time < car2Time) {
-        std::cout << "Sieger ist: Hyundai i10 mit " << car1Time / 1000.0 << "s\n";
-        std::cout << "Verlierer ist:" << volvo.toString() << " mit " << car2Time / 1000.0 << "s\n";
+    if (hyundaiTime < volvoTime) {
+        std::cout << "Sieger ist: Hyundai i10 mit " << hyundaiTime / 1000.0 << "s\n";
+        std::cout << "Verlierer ist:" << volvo.toString() << " mit " << volvoTime / 1000.0 << "s\n";
     } else {
-        std::cout << "Sieger ist:" << volvo.toString() << " mit " << car2Time / 1000.0 << "s\n";
-        std::cout << "Verlierer ist: Hyundai i10 mit " << car1Time / 1000.0 << "s\n";
+        std::cout << "Sieger ist:" << volvo.toString() << " mit " << volvoTime / 1000.0 << "s\n";
+        std::cout << "Verlierer ist: Hyundai i10 mit " << hyundaiTime / 1000.0 << "s\n";
     }
     return 0;
 }

@@ -22,9 +22,9 @@ void hyundai_i10() {
     using namespace std::literals;
     int lapCount{};
     while (true) {
-        std::string output = std::to_string(++lapCount) + " Hyundai i10";
+        std::string output = std::to_string(++lapCount) + " Hyundai i10\n";
 
         std::this_thread::sleep_for(1s);
-        std::cout << output << std::endl;
+        std::cout << output << std::flush;
     }
 }

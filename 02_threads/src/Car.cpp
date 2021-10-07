@@ -11,9 +11,9 @@ void Car::driveLaps() {
     using namespace std::literals;
     int lapCount{};
     while (true) {
-        std::string output = std::to_string(++lapCount) + " " + this->carType;
+        std::string output = std::to_string(++lapCount) + " " + this->carType + "\n";
         std::this_thread::sleep_for(1s);
-        std::cout << output << std::endl;
+        std::cout << output <<std::flush;
     }
 }
 

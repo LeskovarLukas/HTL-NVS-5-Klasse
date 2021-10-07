@@ -22,7 +22,7 @@ void Car::driveLaps() {
 
     buffer << std::setprecision(3);
 
-    for (int lap = 0; lap < 10; lap++) {
+    for (int lap = 0; lap < this->laps; lap++) {
         waitTime = dis(gen) * 1000;
         totalTime += waitTime;
         buffer << lap << " " << this->carType << ": " << waitTime / 1000.0 << "s\n";
@@ -33,8 +33,9 @@ void Car::driveLaps() {
     }
 }
 
-Car::Car(std::string carType) {
+Car::Car(std::string carType, int laps) {
     this->carType = std::move(carType);
+    this->laps = laps;
 }
 
 void Car::operator()() {

@@ -10,11 +10,12 @@
 class Car {
 private:
     std::string carType;
+    int laps;
     int totalTime{};
 
     void driveLaps();
 public:
-    Car(std::string carType);
+    Car(std::string, int);
 
     void operator()();
     int getTotalTime();

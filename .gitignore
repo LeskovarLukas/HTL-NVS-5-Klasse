@@ -4,8 +4,8 @@
 /.pydevproject
 /.settings
 /.cproject
-/.idea
-/.vscode
+*/.idea
+*/.vscode
 
 __pycache__
 /.coverage/

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <csignal>
 #include <cstdlib>
+#include <wait.h>
 
 void startCharout(const char*);
 

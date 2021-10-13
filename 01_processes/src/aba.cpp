@@ -26,7 +26,7 @@ int main() {
             std::cout << "waiting for 3 seconds" << std::endl;
             sleep(3);
             std::cout << "\nkilling both subprocesses with pids " << pidA << " and " << pidB << "\n";
-            std::cout << "waiting for both subprocesses to be dead";
+            std::cout << "waiting for both subprocesses to be dead" << std::endl;
             killSubprocess(pidA);
             killSubprocess(pidB);
         }
@@ -50,5 +50,5 @@ void killSubprocess(pid_t pid) {
     kill(pid, SIGKILL);
     int status;
     waitpid(pid, &status, 0);
-    std::cout << "\nsubprocess " << pid << " exited with " << WIFEXITED(status) << std::flush;
+    std::cout << "subprocess " << pid << " exited with " << WIFEXITED(status) << std::endl;
 }

@@ -11,7 +11,7 @@
 
 #include "include/Car.h"
 
-void Car::driveLaps() {
+void Car::driveLaps(int laps) {
     using namespace std::literals;
 
     std::random_device rd;
@@ -22,7 +22,7 @@ void Car::driveLaps() {
 
     buffer << std::setprecision(3);
 
-    for (int lap = 0; lap < this->laps; lap++) {
+    for (int lap = 0; lap < laps; lap++) {
         waitTime = dis(gen) * 1000;
         totalTime += waitTime;
         buffer << lap << " " << this->carType << ": " << waitTime / 1000.0 << "s\n";
@@ -33,13 +33,12 @@ void Car::driveLaps() {
     }
 }
 
-Car::Car(std::string carType, int laps) {
+Car::Car(std::string carType) {
     this->carType = std::move(carType);
-    this->laps = laps;
 }
 
-void Car::operator()() {
-    driveLaps();
+void Car::operator()(int laps) {
+    driveLaps(laps);
 }
 
 int Car::getTotalTime() {

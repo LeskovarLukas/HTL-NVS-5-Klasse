@@ -45,8 +45,8 @@ int main(int argc, char* argv[]) {
     std::thread hyundai_thread{hyundai_i10, std::ref(hyundaiTime), laps};
 
     int volvoTime;
-    Car volvo = Car("Volvo V40", laps);
-    std::thread volvoThread{std::ref(volvo)};
+    Car volvo = Car("Volvo V40");
+    std::thread volvoThread{std::ref(volvo), laps};
 
     hyundai_thread.join();
     volvoThread.join();
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     std::cout << std::setprecision(3);
     if (hyundaiTime < volvoTime) {
         std::cout << "Sieger ist: Hyundai i10 mit " << hyundaiTime / 1000.0 << "s\n";
-        std::cout << "Verlierer ist:" << volvo.toString() << " mit " << volvoTime / 1000.0 << "s\n";
+        std::cout << "Verlierer ist: " << volvo.toString() << " mit " << volvoTime / 1000.0 << "s\n";
     } else {
         std::cout << "Sieger ist:" << volvo.toString() << " mit " << volvoTime / 1000.0 << "s\n";
         std::cout << "Verlierer ist: Hyundai i10 mit " << hyundaiTime / 1000.0 << "s\n";

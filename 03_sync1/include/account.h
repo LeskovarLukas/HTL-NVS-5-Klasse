@@ -9,6 +9,7 @@
 class Account {
 private:
     int balance{};
+    std::mutex withdrawMutex{};
 
 public:
     int getBalance();

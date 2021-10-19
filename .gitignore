@@ -23,8 +23,8 @@ __pycache__
 *.swp
 packagecache
 /MANIFEST
-/build/*.*
-!/build/.keep
+*/build/*.*
+!*/build/.keep
 /dist
 /meson.egg-info
 

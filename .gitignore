@@ -6,6 +6,7 @@
 /.cproject
 */.idea
 */.vscode
+.vscode
 
 __pycache__
 /.coverage/
@@ -23,8 +24,8 @@ __pycache__
 *.swp
 packagecache
 /MANIFEST
-*/build/*.*
-!*/build/.keep
+build/*.*
+!build/.gitkeep
 /dist
 /meson.egg-info
 

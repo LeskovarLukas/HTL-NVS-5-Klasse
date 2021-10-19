@@ -7,7 +7,13 @@
 
 
 class Account {
+private:
+    int balance{};
 
+public:
+    int getBalance();
+    void deposit(int);
+    bool withdraw(int);
 };
 
 

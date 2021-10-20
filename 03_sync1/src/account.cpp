@@ -11,14 +11,13 @@ int Account::getBalance() {
 }
 
 void Account::deposit(int amount) {
-    using namespace std::literals;
-    int tmp{balance};
-    std::this_thread::sleep_for(10ms);
-    balance = tmp + amount;
+    std::unique_lock<std::mutex> lock(balanceMutex);
+    balance += amount;
+    lock.unlock();
 }
 
 bool Account::withdraw(int amount) {
-    std::lock_guard<std::mutex> lock(withdrawMutex);
+    std::lock_guard<std::mutex> lock(balanceMutex);
     if (balance - amount >= 0) {
         std::this_thread::yield();
         balance -= amount;

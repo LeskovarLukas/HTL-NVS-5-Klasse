@@ -5,11 +5,12 @@
 #ifndef INC_03_SYNC1_ACCOUNT_H
 #define INC_03_SYNC1_ACCOUNT_H
 
+#include <mutex>
 
 class Account {
 private:
     int balance{};
-    std::mutex withdrawMutex{};
+    std::mutex balanceMutex{};
 
 public:
     int getBalance();

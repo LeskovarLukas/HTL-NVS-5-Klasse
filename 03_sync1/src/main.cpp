@@ -27,8 +27,8 @@ int main() {
 //        std::cout << account.withdraw(1) << std::endl;
 //    }};
 
-    Depositer depo1(account);
-    Depositer depo2(account);
+    Depositer depo1(account, 5);
+    Depositer depo2(account, 5);
 
     std::thread t1{std::ref(depo1)};
     std::thread t2{std::ref(depo2)};

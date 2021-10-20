@@ -13,6 +13,8 @@ private:
     std::mutex balanceMutex{};
 
 public:
+    Account(int initialBalance): balance(initialBalance) {}
+
     int getBalance();
     void deposit(int);
     bool withdraw(int);
@@ -24,7 +26,7 @@ private:
     int deposits;
 
 public:
-    Depositer(Account& account, int deposits) : account(account), deposits(deposits) {   }
+    Depositer(Account& account, int deposits) : account(account), deposits(deposits) {}
 
     void operator()() {
         for (int i = 0; i < deposits; i++) {

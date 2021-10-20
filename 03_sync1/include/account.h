@@ -17,5 +17,18 @@ public:
     bool withdraw(int);
 };
 
+class Depositer {
+private:
+    Account& account;
+
+public:
+    Depositer(Account& account) : account(account) {   }
+
+    void operator()() {
+        for (int i = 0; i < 5; i++) {
+            account.deposit(1);
+        }
+    }
+};
 
 #endif //INC_03_SYNC1_ACCOUNT_H

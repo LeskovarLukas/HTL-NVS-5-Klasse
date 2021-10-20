@@ -3,8 +3,6 @@
 
 #include "../include/account.h"
 
-using namespace std;
-
 int main() {
     Account account;
 
@@ -18,18 +16,27 @@ int main() {
 //    std::cout << account.withdraw(10) << std::endl;
 //    std::cout << account.getBalance() << std::endl;
 
-    account.deposit(1);
+    //Punkt 2
+//    account.deposit(1);
+//
+//    thread t1{[&]() {
+//        std::cout << account.withdraw(1) << std::endl;
+//    }};
+//
+//    thread t2{[&]() {
+//        std::cout << account.withdraw(1) << std::endl;
+//    }};
 
-    thread t1{[&]() {
-        std::cout << account.withdraw(1) << std::endl;
-    }};
+    Depositer depo1(account);
+    Depositer depo2(account);
 
-    thread t2{[&]() {
-        std::cout << account.withdraw(1) << std::endl;
-    }};
+    std::thread t1{std::ref(depo1)};
+    std::thread t2{std::ref(depo2)};
 
     t1.join();
     t2.join();
+
+    std::cout << account.getBalance() << std::endl;
 
     return 0;
 }

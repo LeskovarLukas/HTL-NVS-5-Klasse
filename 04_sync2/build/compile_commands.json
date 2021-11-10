@@ -1,0 +1,12 @@
+[
+  {
+    "directory": "/media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2/build",
+    "command": "c++ -Iloadsim.p -I. -I.. -I../include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wpedantic -Werror -std=c++17 -g -pthread -MD -MQ loadsim.p/src_main.cpp.o -MF loadsim.p/src_main.cpp.o.d -o loadsim.p/src_main.cpp.o -c ../src/main.cpp",
+    "file": "../src/main.cpp"
+  },
+  {
+    "directory": "/media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2/build",
+    "command": "c++ -Iloadsim.p -I. -I.. -I../include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wpedantic -Werror -std=c++17 -g -pthread -MD -MQ loadsim.p/src_work_queue.cpp.o -MF loadsim.p/src_work_queue.cpp.o.d -o loadsim.p/src_work_queue.cpp.o -c ../src/work_queue.cpp",
+    "file": "../src/work_queue.cpp"
+  }
+]

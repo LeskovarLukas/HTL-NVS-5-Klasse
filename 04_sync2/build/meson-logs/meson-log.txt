@@ -1,0 +1,69 @@
+Build started at 2021-11-10T10:14:52.031862
+Main binary: /usr/bin/python3
+Build Options: 
+Python system: Linux
+The Meson build system
+Version: 0.59.1
+Source dir: /media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2
+Build dir: /media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2/build
+Build type: native build
+Project name: 04_sync2
+Project version: 0.1
+Sanity testing C++ compiler: c++
+Is cross compiler: False.
+Sanity check compiler command line: c++ sanitycheckcpp.cc -o sanitycheckcpp.exe -D_FILE_OFFSET_BITS=64
+Sanity check compile stdout:
+
+-----
+Sanity check compile stderr:
+
+-----
+Running test binary command: /media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2/build/meson-private/sanitycheckcpp.exe
+C++ compiler for the host machine: c++ (gcc 7.5.0 "c++ (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0")
+C++ linker for the host machine: c++ ld.bfd 2.30
+Sanity testing C++ compiler: c++
+Is cross compiler: False.
+Sanity check compiler command line: c++ sanitycheckcpp.cc -o sanitycheckcpp.exe -D_FILE_OFFSET_BITS=64
+Sanity check compile stdout:
+
+-----
+Sanity check compile stderr:
+
+-----
+Running test binary command: /media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2/build/meson-private/sanitycheckcpp.exe
+C++ compiler for the build machine: c++ (gcc 7.5.0 "c++ (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0")
+C++ linker for the build machine: c++ ld.bfd 2.30
+Build machine cpu family: x86_64
+Build machine cpu: x86_64
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Target machine cpu family: x86_64
+Target machine cpu: x86_64
+Run-time dependency threads found: YES
+Build targets in project: 1
+
+Found ninja-1.8.2 at /usr/bin/ninja
+Running compile:
+Working directory:  /tmp/tmp3c1nl2oh
+Command line:  c++ /tmp/tmp3c1nl2oh/testfile.cpp -o /tmp/tmp3c1nl2oh/output.obj -D_FILE_OFFSET_BITS=64 -c -std=c++17 
+
+Code:
+ int i = static_cast<int>(0);
+Compiler stdout:
+ 
+Compiler stderr:
+ 
+Compiler accepts -std=c++17: YES
+Running compile:
+Working directory:  /media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2/build/meson-private/tmpuj521_d7
+Command line:  c++ /media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2/build/meson-private/tmpuj521_d7/testfile.cpp -o /media/psf/Home/Programs/Schule/5BHIF/NVS/leskovar/04_sync2/build/meson-private/tmpuj521_d7/output.obj -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive --print-search-dirs 
+
+Code:
+ 
+Compiler stdout:
+ install: /usr/lib/gcc/x86_64-linux-gnu/7/
+programs: =/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../x86_64-linux-gnu/bin/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../x86_64-linux-gnu/bin/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../x86_64-linux-gnu/bin/
+libraries: =/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../x86_64-linux-gnu/lib/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../x86_64-linux-gnu/lib/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../x86_64-linux-gnu/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/7/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/7/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../x86_64-linux-gnu/lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/
+
+Compiler stderr:
+ 

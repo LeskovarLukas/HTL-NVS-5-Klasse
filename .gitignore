@@ -24,8 +24,8 @@ __pycache__
 *.swp
 packagecache
 /MANIFEST
-build/*.*
-build/*/
+*/build/*.*
+*/build/*/
 !build/.gitkeep
 /dist
 /meson.egg-info

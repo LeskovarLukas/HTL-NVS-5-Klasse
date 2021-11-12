@@ -4,11 +4,12 @@
 #include <random>
 #include <iomanip>
 #include "../include/work_queue.h"
+#include "../include/CLI11.hpp"
 
 void worker(int, WorkQueue&);
 
 
-int main() {
+int main(int argc, char** argv) {
     WorkQueue q{};
     int counter = 0;
     std::random_device rd;
@@ -16,6 +17,11 @@ int main() {
     std::uniform_real_distribution<> dis{0, 1};
     std::ostringstream buffer;
 
+    CLI::App app("Boss and worker simulation");
+
+    unsigned int size;
+    app.add_option("size", size, "Size of the queue")->required();
+    CLI11_PARSE(app, argc, argv);
 
     std::thread t1(worker, 1, std::ref(q));
     std::thread t2(worker, 2, std::ref(q));
@@ -33,8 +39,6 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds{waitTime});
 
         std::unique_lock<std::mutex> lock(q.queue_mutex);
-        std::cout << q.size() << std::endl;
-        std::cout << q.queue_size << std::endl;
         q.not_full.wait(lock, [&] { return q.size() < q.queue_size; });
 
         q.push(WorkPacket(counter)); 

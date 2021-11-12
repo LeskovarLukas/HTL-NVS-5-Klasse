@@ -9,29 +9,42 @@ void worker(int, WorkQueue&);
 
 
 int main() {
-    WorkQueue queue{};
+    WorkQueue q{};
     int counter = 0;
     std::random_device rd;
     std::mt19937 gen{rd()};
     std::uniform_real_distribution<> dis{0, 1};
+    std::ostringstream buffer;
 
-    std::thread t1(worker, 1, std::ref(queue));
-    std::thread t2(worker, 2, std::ref(queue));
-    std::thread t3(worker, 3, std::ref(queue));
 
-    std::cout << std::setprecision(3);
+    std::thread t1(worker, 1, std::ref(q));
+    std::thread t2(worker, 2, std::ref(q));
+    std::thread t3(worker, 3, std::ref(q));
+
+    buffer << std::setprecision(3);
 
     while (true)
     {
+        buffer << "B: Waiting to submit work packet " << counter << std::endl;
+        std::cout << buffer.str() << std::flush;
+        buffer.str("");
+
         int waitTime = dis(gen) * 1000;
         std::this_thread::sleep_for(std::chrono::milliseconds{waitTime});
 
-        std::lock_guard<std::mutex> lock(queue.queue_mutex);
-        queue.push(WorkPacket(counter)); 
+        std::unique_lock<std::mutex> lock(q.queue_mutex);
+        std::cout << q.size() << std::endl;
+        std::cout << q.queue_size << std::endl;
+        q.not_full.wait(lock, [&] { return q.size() < q.queue_size; });
 
-        std::cout << "B: Submitted work packet " << counter++ << " (" << waitTime / 1000.0 << "s)" << std::endl;
+        q.push(WorkPacket(counter)); 
 
-        queue.not_empty.notify_one();
+        buffer << "B: Submitted work packet " << counter++ << " (" << waitTime / 1000.0 << "s)" << std::endl;
+        std::cout << buffer.str() << std::flush;
+        buffer.str("");
+
+        q.not_empty.notify_one();
+        lock.unlock();
     }
     
     t1.join();
@@ -55,10 +68,17 @@ void worker(int id, WorkQueue& q) {
         buffer.str("");
 
         std::unique_lock<std::mutex> lock(q.queue_mutex);
-        q.not_empty.wait(lock);
+        q.not_empty.wait(lock, [&] { return q.size() > 0; });
+
 
         WorkPacket p = q.pop();
-        std::cout << "W" << id << ": Got work packet " << p.getID() << std::endl;
+        buffer << "W" << id << ": Got work packet " << p.getID() << std::endl;
+        std::cout << buffer.str() << std::flush;
+        buffer.str("");
+
+        if (q.size() == q.queue_size - 1) {
+            q.not_full.notify_one();
+        }
 
         lock.unlock();
 

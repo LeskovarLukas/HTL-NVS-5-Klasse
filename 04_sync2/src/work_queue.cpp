@@ -1,3 +1,5 @@
+
+#include <iostream>
 #include "../include/work_queue.h"
 
 WorkQueue::WorkQueue() {

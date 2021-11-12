@@ -2,14 +2,16 @@
 
 #pragma once 
 
+#include <iostream>
+
 class WorkPacket
 {
 private:
-    const int id;
+    int id;
 public:
     WorkPacket(int id): id{id} {};
 
     int getID() const {
-        return this->id;
+        return id;
     }
 };

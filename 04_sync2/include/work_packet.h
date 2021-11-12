@@ -9,9 +9,7 @@ private:
 public:
     WorkPacket(int id): id{id} {};
 
-    int getID() const;
+    int getID() const {
+        return this->id;
+    }
 };
-
-int WorkPacket::getID() const {
-    return this->id;
-}

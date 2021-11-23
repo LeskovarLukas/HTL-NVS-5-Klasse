@@ -1,5 +1,6 @@
 #pragma once 
 
+#include <vector>
 #include <mutex>
 
 class Philosopher
@@ -8,9 +9,11 @@ private:
     int id;
     std::mutex& leftFork;
     std::mutex& rightFork;
+    static std::mutex out_mtx;
 public:
-    Philosopher(int id, std::mutex& leftFork, std::mutex& rightFork): id{id}, leftFork{leftFork}, rightFork{rightFork} {}
+    Philosopher(int id, std::mutex& leftFork, std::mutex& rightFork): id{id}, leftFork{leftFork}, rightFork{rightFork} {
+    }
 
     void operator()();
-    void printText(std::string);
+    void println(const std::vector<std::string>&);
 };

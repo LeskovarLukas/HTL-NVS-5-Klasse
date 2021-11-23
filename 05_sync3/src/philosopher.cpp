@@ -9,29 +9,35 @@
 void Philosopher::operator()()
 {
     while (true) {
-        printText("is thinking...");
+        println({"Philosopher", std::to_string(id), "is thinking..."});
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        printText("attempts to get left fork");
+        println({"Philosopher", std::to_string(id), "attempts to get left fork"});
         leftFork.lock();
 
-        printText("got left fork. Now he wants the right one...");
+        println({"Philosopher", std::to_string(id), "got left fork. Now he wants the right one..."});
         rightFork.lock();
 
-        printText("got right fork. Now he is eating...");
+        println({"Philosopher", std::to_string(id), "got right fork. Now he is eating..."});
         std::this_thread::sleep_for(std::chrono::seconds(2));
-        printText("finished eating");
+        println({"Philosopher", std::to_string(id), "finished eating"});
 
         leftFork.unlock();
-        printText("released left fork");
+        println({"Philosopker", std::to_string(id), "released left fork"});
         
         rightFork.unlock();
-        printText("released right fork");
+        println({ "Philosopher", std::to_string(id), "released right fork"});
     }
 }
 
-void Philosopher::printText(std::string text) {
-    std::ostringstream oss;
-    oss << "Philosopher " << id << " " << text;
-    std::cout << oss.str() << std::endl;
+void Philosopher::println(const std::vector<std::string>& text) {
+    std::lock_guard<std::mutex> lock(Philosopher::out_mtx);
+
+    for (auto& line : text) {
+        std::cout << line << " ";
+    }
+    std::cout << std::endl;
 }
+
+
+std::mutex Philosopher::out_mtx;

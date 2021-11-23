@@ -15,5 +15,5 @@ public:
     }
 
     void operator()();
-    void println(const std::vector<std::string>&);
+    void println(const std::initializer_list<std::string>&);
 };

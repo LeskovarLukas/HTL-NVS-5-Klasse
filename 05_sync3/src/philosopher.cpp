@@ -30,7 +30,7 @@ void Philosopher::operator()()
     }
 }
 
-void Philosopher::println(const std::vector<std::string>& text) {
+void Philosopher::println(const std::initializer_list<std::string>& text) {
     std::lock_guard<std::mutex> lock(Philosopher::out_mtx);
 
     for (auto& line : text) {

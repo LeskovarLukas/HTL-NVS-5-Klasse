@@ -14,7 +14,15 @@ void Philosopher::operator()()
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         println("Philosopher", std::to_string(id), "attempts to get left fork");
+        std::unique_lock<std::mutex> lck(Philosopher::leftForkSem_mtx);
+        if (leftForkSem) {
+            leftForkSem->aquire();
+            if (leftForkSem->available_permits() == 0) {
+                println("currently 1 left fork available");
+            }
+        }
         leftFork.lock();
+        lck.unlock();
 
         println("Philosopher", std::to_string(id), "got left fork. Now he wants the right one...");
         std::this_thread::sleep_for(std::chrono::seconds(5));
@@ -26,6 +34,10 @@ void Philosopher::operator()()
 
         leftFork.unlock();
         println("Philosopker", std::to_string(id), "released left fork");
+        if (leftForkSem) {
+            leftForkSem->release();
+            println("currently", std::to_string(leftForkSem->available_permits() + 1), "left forks available");
+        }
         
         rightFork.unlock();
         println( "Philosopher", std::to_string(id), "released right fork");
@@ -43,3 +55,5 @@ void Philosopher::operator()()
 
 
 //std::mutex Philosopher::out_mtx;
+
+std::mutex Philosopher::leftForkSem_mtx;

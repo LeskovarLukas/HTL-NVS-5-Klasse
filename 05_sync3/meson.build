@@ -6,8 +6,8 @@ project('05_sync3', 'cpp',
 
 thread_dep = dependency('threads')
 
-
-
+# CLI11: https://github.com/CLIUtils/CLI11
+add_global_arguments('-I' + get_option('cli11_include_dir'), language : 'cpp')
 
 inc_dir = include_directories('include')
 src = ['src/main.cpp', 'src/philosopher.cpp', 'src/utils.cpp', 'src/semaphore.cpp']

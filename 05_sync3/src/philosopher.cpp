@@ -36,7 +36,7 @@ void Philosopher::operator()()
         println("Philosopker", std::to_string(id), "released left fork");
         if (leftForkSem) {
             leftForkSem->release();
-            println("currently", std::to_string(leftForkSem->available_permits() + 1), "left forks available");
+            println("currently", std::to_string(leftForkSem->available_permits() + 1), "left fork available");
         }
         
         rightFork.unlock();

@@ -2,9 +2,23 @@
 #include <mutex>
 #include <thread>
 #include "Philosopher.h"
+#include "CLI11.hpp"
 
-int main() {
-    Semaphore* leftForkSem = new Semaphore(4);
+int main(int argc, char* argv[]) {
+    CLI::App app("Dining philosophers simulation");
+
+    bool noDeadlock = false;
+    app.add_flag("-n,--nodeadlock", noDeadlock, "Prevent a deadlock at all");
+    bool liveLock = false;
+    app.add_flag("-l,--livelock", liveLock, "Simulate a livelock");
+    CLI11_PARSE(app, argc, argv);
+
+
+    Semaphore* leftForkSem = nullptr;
+    if (noDeadlock) {
+        leftForkSem = new Semaphore(4);
+    }
+
     std::mutex forks[5];
     Philosopher philosophers[5] = {
         Philosopher(0, forks[0], forks[1], leftForkSem),

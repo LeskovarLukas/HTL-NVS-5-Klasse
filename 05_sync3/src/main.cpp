@@ -1,7 +1,7 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
-#include "../include/Philosopher.h"
+#include "Philosopher.h"
 
 int main() {
     std::mutex forks[5];

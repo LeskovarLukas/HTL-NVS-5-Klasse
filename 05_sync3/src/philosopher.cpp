@@ -17,6 +17,7 @@ void Philosopher::operator()()
         leftFork.lock();
 
         println("Philosopher", std::to_string(id), "got left fork. Now he wants the right one...");
+        std::this_thread::sleep_for(std::chrono::seconds(5));
         rightFork.lock();
 
         println("Philosopher", std::to_string(id), "got right fork. Now he is eating...");

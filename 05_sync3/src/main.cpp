@@ -17,9 +17,10 @@ int main(int argc, char* argv[]) {
     Semaphore* leftForkSem = nullptr;
     if (noDeadlock) {
         leftForkSem = new Semaphore(4);
-    }
+    } 
 
-    std::mutex forks[5];
+    std::timed_mutex forks[5];
+
     Philosopher philosophers[5] = {
         Philosopher(0, forks[0], forks[1], leftForkSem),
         Philosopher(1, forks[1], forks[2], leftForkSem),
@@ -30,7 +31,7 @@ int main(int argc, char* argv[]) {
     std::thread philosophersThreads[5];
 
     for (auto& philosopher : philosophers) {
-        std::thread t{philosopher};  
+        std::thread t{philosopher, liveLock};
         philosophersThreads[&philosopher - philosophers] = std::move(t);
     }
 

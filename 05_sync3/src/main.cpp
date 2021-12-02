@@ -22,11 +22,11 @@ int main(int argc, char* argv[]) {
     std::timed_mutex forks[5];
 
     Philosopher philosophers[5] = {
-        Philosopher(0, forks[0], forks[1], leftForkSem),
-        Philosopher(1, forks[1], forks[2], leftForkSem),
-        Philosopher(2, forks[2], forks[3], leftForkSem),
-        Philosopher(3, forks[3], forks[4], leftForkSem),
-        Philosopher(4, forks[4], forks[0], leftForkSem)
+        Philosopher(1, forks[0], forks[1], leftForkSem),
+        Philosopher(2, forks[1], forks[2], leftForkSem),
+        Philosopher(3, forks[2], forks[3], leftForkSem),
+        Philosopher(4, forks[3], forks[4], leftForkSem),
+        Philosopher(5, forks[4], forks[0], leftForkSem)
     };
     std::thread philosophersThreads[5];
 

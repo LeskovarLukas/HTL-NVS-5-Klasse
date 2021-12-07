@@ -8,16 +8,16 @@
 
 std::string checkNumber(const std::string&);
 
-void printFactors(std::vector<std::future<std::vector<InfInt>> >&, std::vector<InfInt>&);
+void printFactors(std::vector<std::shared_future<std::vector<InfInt>> >&, std::vector<InfInt>&);
 
-void checkFactors(std::vector<std::future<std::vector<InfInt>> >&, std::vector<InfInt>&);
+void checkFactors(std::vector<std::shared_future<std::vector<InfInt>> >&, std::vector<InfInt>&);
 
 
 int main(int argc, char const *argv[]){
     CLI::App app("Factor numbers");
     std::vector<std::string> numbersInput;
     std::vector<InfInt> numbers; 
-    std::vector<std::future<std::vector<InfInt>> > factorFutures{};
+    std::vector<std::shared_future<std::vector<InfInt>> > factorFutures{};
 
     app.add_option("number", numbersInput, "numbers to factor")->required()->check(checkNumber);
     CLI11_PARSE(app, argc, argv);
@@ -53,7 +53,7 @@ std::string checkNumber(const std::string& number) {
     return "";
 }
 
-void printFactors(std::vector<std::future<std::vector<InfInt>> >& factorFutures, std::vector<InfInt>& numbers) {
+void printFactors(std::vector<std::shared_future<std::vector<InfInt>> >& factorFutures, std::vector<InfInt>& numbers) {
     unsigned int i = 0;
     while (i < factorFutures.size()) {
         auto& factorFuture = factorFutures.at(i);
@@ -71,7 +71,7 @@ void printFactors(std::vector<std::future<std::vector<InfInt>> >& factorFutures,
     }
 }
 
-void checkFactors(std::vector<std::future<std::vector<InfInt>> >& factorFutures, std::vector<InfInt>& numbers) {
+void checkFactors(std::vector<std::shared_future<std::vector<InfInt>> >& factorFutures, std::vector<InfInt>& numbers) {
     unsigned int i = 0;
     while (i < factorFutures.size()) {
         auto& factorFuture = factorFutures.at(i);

@@ -8,7 +8,7 @@
 
 std::string checkNumber(const std::string&);
 
-void printFactors(const std::vector<InfInt>&, const std::vector<InfInt>&);
+void printFactors(std::vector<std::future<std::vector<InfInt>> >&, std::vector<InfInt>&);
 
 int main(int argc, char const *argv[]){
     CLI::App app("Factor numbers");
@@ -27,19 +27,8 @@ int main(int argc, char const *argv[]){
         factorFutures.push_back(std::async(std::launch::async, get_factors, number));
     }
 
-    while (!factorFutures.empty()) {
-        auto factorFuture = factorFutures.begin();
-        
-        if (factorFuture->wait_for(std::chrono::milliseconds(1000)) == std::future_status::ready) {
-            std::vector<InfInt> factors = factorFuture->get();
-
-            std::thread t{printFactors, std::ref(factors), std::ref(numbers)};
-
-            t.join();
-            factorFutures.erase(factorFuture);
-            numbers.erase(numbers.begin());
-        }
-    }
+    std::thread printThread{printFactors, std::ref(factorFutures), std::ref(numbers)};
+    printThread.join();
 
     return 0;
 }
@@ -59,10 +48,20 @@ std::string checkNumber(const std::string& number) {
     return "";
 }
 
-void printFactors(const std::vector<InfInt>& factors, const std::vector<InfInt>& numbers) {
-    std::cout << numbers[0] << ": ";
-    for (const InfInt& factor : factors) {
-        std::cout << factor << " ";
+void printFactors(std::vector<std::future<std::vector<InfInt>> >& factorFutures, std::vector<InfInt>& numbers) {
+    unsigned int i = 0;
+    while (i < factorFutures.size()) {
+        std::future<std::vector<InfInt>>& factorFuture = factorFutures.at(i);
+
+        if (factorFuture.wait_for(std::chrono::milliseconds(1000)) == std::future_status::ready) {
+            std::vector<InfInt> factors = factorFuture.get();
+
+            std::cout << numbers[i] << ": ";
+            for (const InfInt& factor : factors) {
+                std::cout << factor << " ";
+            }
+            std::cout << std::endl;
+            i++;
+        }
     }
-    std::cout << std::endl;
 }

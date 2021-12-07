@@ -14,8 +14,6 @@
 #pragma GCC diagnostic pop
 
 inline std::vector<InfInt> get_factors(InfInt number) { // number should be positive
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-
     std::vector<InfInt> factors;
     while (number % 2 == InfInt::zero) {
         number = number / 2;

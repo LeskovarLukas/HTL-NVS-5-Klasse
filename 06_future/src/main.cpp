@@ -1,4 +1,5 @@
 #include <iostream>
+#include <future>
 
 #include "calc_factors.h"
 #include "CLI11.hpp"
@@ -9,7 +10,8 @@ std::string checkNumber(const std::string&);
 int main(int argc, char const *argv[]){
     CLI::App app("Factor numbers");
     std::vector<std::string> numbersInput;
-    std::vector<InfInt> numbers;
+    std::vector<InfInt> numbers; 
+    std::vector<std::future<std::vector<InfInt>> > factorFutures{};
 
     app.add_option("number", numbersInput, "numbers to factor")->required()->check(checkNumber);
     CLI11_PARSE(app, argc, argv);
@@ -19,13 +21,23 @@ int main(int argc, char const *argv[]){
     }
 
     for (const InfInt& number : numbers) {
-        std::vector<InfInt> factors = get_factors(number);
+        factorFutures.push_back(std::async(std::launch::async, get_factors, number));
+    }
 
-        std::cout << number << ": ";
-        for (const InfInt& factor : factors) {
-            std::cout << factor << " ";
+    int index = 0;  // does not feel right;
+    while (!factorFutures.empty()) {
+        auto factorFuture = factorFutures.begin();
+        
+        if (factorFuture->wait_for(std::chrono::milliseconds(1000)) == std::future_status::ready) {
+            std::vector<InfInt> factors = factorFuture->get();
+
+            std::cout << numbers[index++] << ": ";
+            for (const InfInt& factor : factors) {
+                std::cout << factor << " ";
+            }
+            std::cout << std::endl;
+            factorFutures.erase(factorFuture);
         }
-        std::cout << std::endl;
     }
 
     return 0;

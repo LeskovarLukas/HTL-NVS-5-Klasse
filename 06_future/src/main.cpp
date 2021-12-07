@@ -10,6 +10,9 @@ std::string checkNumber(const std::string&);
 
 void printFactors(std::vector<std::future<std::vector<InfInt>> >&, std::vector<InfInt>&);
 
+void checkFactors(std::vector<std::future<std::vector<InfInt>> >&, std::vector<InfInt>&);
+
+
 int main(int argc, char const *argv[]){
     CLI::App app("Factor numbers");
     std::vector<std::string> numbersInput;
@@ -28,7 +31,9 @@ int main(int argc, char const *argv[]){
     }
 
     std::thread printThread{printFactors, std::ref(factorFutures), std::ref(numbers)};
+    std::thread checkThread{checkFactors, std::ref(factorFutures), std::ref(numbers)};
     printThread.join();
+    checkThread.join();
 
     return 0;
 }
@@ -51,7 +56,7 @@ std::string checkNumber(const std::string& number) {
 void printFactors(std::vector<std::future<std::vector<InfInt>> >& factorFutures, std::vector<InfInt>& numbers) {
     unsigned int i = 0;
     while (i < factorFutures.size()) {
-        std::future<std::vector<InfInt>>& factorFuture = factorFutures.at(i);
+        auto& factorFuture = factorFutures.at(i);
 
         if (factorFuture.wait_for(std::chrono::milliseconds(1000)) == std::future_status::ready) {
             std::vector<InfInt> factors = factorFuture.get();
@@ -61,6 +66,28 @@ void printFactors(std::vector<std::future<std::vector<InfInt>> >& factorFutures,
                 std::cout << factor << " ";
             }
             std::cout << std::endl;
+            i++;
+        }
+    }
+}
+
+void checkFactors(std::vector<std::future<std::vector<InfInt>> >& factorFutures, std::vector<InfInt>& numbers) {
+    unsigned int i = 0;
+    while (i < factorFutures.size()) {
+        auto& factorFuture = factorFutures.at(i);
+
+        if (factorFuture.wait_for(std::chrono::milliseconds(1000)) == std::future_status::ready) {
+            std::vector<InfInt> factors = factorFuture.get();
+            InfInt checkSum = 1;
+
+            for (const InfInt& factor : factors) {
+                checkSum *= factor;
+            }
+            
+            if (checkSum != numbers[i]) {
+                std::cerr << "ERROR: " << numbers[i] << " is not the product of its factors" << std::endl;
+            }
+
             i++;
         }
     }

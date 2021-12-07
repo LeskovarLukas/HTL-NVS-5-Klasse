@@ -17,23 +17,44 @@ int main(int argc, char const *argv[]){
     CLI::App app("Factor numbers");
     std::vector<std::string> numbersInput;
     std::vector<InfInt> numbers; 
-    std::vector<std::shared_future<std::vector<InfInt>> > factorFutures{};
+    std::vector<std::shared_future<std::vector<InfInt>> > factorFutures;
 
+    bool useAsync = false;
+    app.add_flag("-a, --async", useAsync, "Use async");
     app.add_option("number", numbersInput, "numbers to factor")->required()->check(checkNumber);
     CLI11_PARSE(app, argc, argv);
+    
 
     for (const std::string& number : numbersInput) {
         numbers.push_back(InfInt(number));
     }
 
+    auto start = std::chrono::system_clock::now();
+
     for (const InfInt& number : numbers) {
-        factorFutures.push_back(std::async(std::launch::async, get_factors, number));
+        if (useAsync) {
+            factorFutures.push_back(std::async(std::launch::async, get_factors, number));
+        } else {
+            factorFutures.push_back(std::async(std::launch::deferred, get_factors, number));
+            factorFutures.back().wait();
+        }
     }
 
     std::thread printThread{printFactors, std::ref(factorFutures), std::ref(numbers)};
     std::thread checkThread{checkFactors, std::ref(factorFutures), std::ref(numbers)};
+
+    unsigned int i = 0;
+    while (i < factorFutures.size()) {
+        if (factorFutures[i].wait_for(std::chrono::milliseconds(100)) == std::future_status::ready) {
+            i++;
+        }
+    }
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+
     printThread.join();
     checkThread.join();
+
+    std::cout << "Time elapsed used for factoring: " << duration.count() << "ms" << std::endl;
 
     return 0;
 }

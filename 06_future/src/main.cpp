@@ -1,11 +1,14 @@
 #include <iostream>
 #include <future>
+#include <thread>
 
 #include "calc_factors.h"
 #include "CLI11.hpp"
 
 
 std::string checkNumber(const std::string&);
+
+void printFactors(const std::vector<InfInt>&, const std::vector<InfInt>&);
 
 int main(int argc, char const *argv[]){
     CLI::App app("Factor numbers");
@@ -24,19 +27,17 @@ int main(int argc, char const *argv[]){
         factorFutures.push_back(std::async(std::launch::async, get_factors, number));
     }
 
-    int index = 0;  // does not feel right;
     while (!factorFutures.empty()) {
         auto factorFuture = factorFutures.begin();
         
         if (factorFuture->wait_for(std::chrono::milliseconds(1000)) == std::future_status::ready) {
             std::vector<InfInt> factors = factorFuture->get();
 
-            std::cout << numbers[index++] << ": ";
-            for (const InfInt& factor : factors) {
-                std::cout << factor << " ";
-            }
-            std::cout << std::endl;
+            std::thread t{printFactors, std::ref(factors), std::ref(numbers)};
+
+            t.join();
             factorFutures.erase(factorFuture);
+            numbers.erase(numbers.begin());
         }
     }
 
@@ -56,4 +57,12 @@ std::string checkNumber(const std::string& number) {
         return std::string(number) + " contains non-numeric characters";
     }
     return "";
+}
+
+void printFactors(const std::vector<InfInt>& factors, const std::vector<InfInt>& numbers) {
+    std::cout << numbers[0] << ": ";
+    for (const InfInt& factor : factors) {
+        std::cout << factor << " ";
+    }
+    std::cout << std::endl;
 }

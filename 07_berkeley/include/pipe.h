@@ -24,11 +24,11 @@ class Pipe {
     Pipe& operator>>(T& value) {
         std::unique_lock<std::mutex> lock(mtx);
         if (!closed) {
-            not_empty.wait(lock, [this]{ return !backend.empty(); });
+            not_empty.wait_for(lock, std::chrono::milliseconds(500), [this]{ return !backend.empty(); });
             value = backend.front();
             backend.pop();
         }
-        // here we go!
+        
         return *this;
     }
 

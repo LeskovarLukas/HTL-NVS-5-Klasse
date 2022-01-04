@@ -6,11 +6,16 @@
 
 Clock::Clock(std::string name) {
     this->name = name;
+    curr_time = std::chrono::system_clock::now();
+}
+
+Clock::Clock(std::string name_, int hours_, int minutes_, int seconds_) {
+    this->name = name_;
+    curr_time = std::chrono::system_clock::now();
+    curr_time = set_time(curr_time, hours_, minutes_, seconds_);
 }
 
 void Clock::operator()() {
-    curr_time = std::chrono::system_clock::now();
-
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -18,6 +23,4 @@ void Clock::operator()() {
 
         std::cout << name << ": " << curr_time << std::endl;
     }
-    
-    
 }

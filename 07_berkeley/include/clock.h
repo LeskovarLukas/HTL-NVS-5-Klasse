@@ -5,7 +5,8 @@
 
 class Clock {
 public:
-    Clock(std::string name);
+    Clock(std::string);
+    Clock(std::string, int, int, int);
 
     void operator()();
 

@@ -26,11 +26,15 @@ std::tuple<int, int, int> Clock::get_time() {
 
 
 void Clock::operator()() {
+    std::ostringstream buffer;
+
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         curr_time += std::chrono::duration<int, std::milli>(1000);
 
-        std::cout << name << ": " << curr_time << std::endl;
+        buffer << name << ": " << curr_time << std::endl;
+        std::cout << buffer.str() << std::flush;
+        buffer.str("");
     }
 }

@@ -2,11 +2,16 @@
 #include <thread>
 
 #include "../include/clock.h"
+#include "../include/pipe.h"
 
 
 class TimeSlave {
 public: 
     TimeSlave(std::string name, int hour, int minute, int second): name(name), clock(Clock(name, hour, minute, second)) {
+    };
+
+    Channel* get_channel() {
+        return channel;
     };
 
     void operator()() {
@@ -17,6 +22,49 @@ public:
 private:
     std::string name;
     Clock clock;
+    Channel* channel{new Channel()};
+};
+
+
+class TimeMaster {
+public: 
+    TimeMaster(std::string name, int hour, int minute, int second): name(name), clock(Clock(name, hour, minute, second)) {
+    };
+
+    void set_channel1(Channel* channel) {
+        this->channel1 = channel;
+    };
+
+    void set_channel2(Channel* channel) {
+        this->channel2 = channel;
+    };
+
+    void operator()() {
+        std::thread clock_thread(std::ref(this->clock));
+        clock_thread.join();
+    }
+    
+private:
+    std::string name;
+    Clock clock;
+    Channel* channel1;
+    Channel* channel2;
+};
+
+
+class Channel {
+public:
+    Pipe<long>& get_pipe1() {
+        return pipe1;
+    }
+
+    Pipe<long>& get_pipe2() {
+        return pipe2;
+    }
+
+private:
+    Pipe<long> pipe1;
+    Pipe<long> pipe2;
 };
 
 
@@ -36,15 +84,35 @@ int main(){
     // std::thread clock_thread(std::ref(clock));
     // clock_thread.join();
 
-    // 5)
-    TimeSlave slave1("slave1", 12, 20, 0);
-    TimeSlave slave2("slave2", 12, 30, 0);
+    // 5) & 6)
+    // TimeMaster master("master", 12, 10, 0);
+    // TimeSlave slave1("slave1", 12, 20, 0);
+    // TimeSlave slave2("slave2", 12, 30, 0);
 
-    std::thread slave1_thread(std::ref(slave1));
-    std::thread slave2_thread(std::ref(slave2));
+    // std::thread master_thread(std::ref(master));
+    // std::thread slave1_thread(std::ref(slave1));
+    // std::thread slave2_thread(std::ref(slave2));
 
-    slave1_thread.join();
-    slave2_thread.join();
+    // master_thread.join();
+    // slave1_thread.join();
+    // slave2_thread.join();
+
+    // 7) Pipe test
+    int i{};
+    Pipe<int> pipe;
+
+    pipe << i++;
+    int value;
+    if (pipe >> value) {
+        std::cout << "value: " << value << std::endl;
+    }
+    pipe.close();
+    pipe << i++;
+    if (pipe >> value) {
+        std::cout << "value: " << value << std::endl;
+    }
+    
+
 
     return 0;
 }

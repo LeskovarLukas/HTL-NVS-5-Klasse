@@ -12,8 +12,18 @@ Clock::Clock(std::string name) {
 Clock::Clock(std::string name_, int hours_, int minutes_, int seconds_) {
     this->name = name_;
     curr_time = std::chrono::system_clock::now();
-    curr_time = set_time(curr_time, hours_, minutes_, seconds_);
+    curr_time = ::set_time(curr_time, hours_, minutes_, seconds_);
 }
+
+
+void Clock::set_time(int hours_, int minutes_, int seconds_) {
+    curr_time = ::set_time(curr_time, hours_, minutes_, seconds_);
+}
+
+std::tuple<int, int, int> Clock::get_time() {
+    return ::get_time(curr_time);
+}
+
 
 void Clock::operator()() {
     while (true)

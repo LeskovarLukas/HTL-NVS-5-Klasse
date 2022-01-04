@@ -8,6 +8,9 @@ public:
     Clock(std::string);
     Clock(std::string, int, int, int);
 
+    void set_time(int, int, int);
+    std::tuple<int, int, int> get_time();
+
     void operator()();
 
 private:

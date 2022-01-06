@@ -4,6 +4,7 @@
 
 #include "../include/clock.h"
 #include "../include/pipe.h"
+#include "CLI11.hpp"
 
 
 void println(const std::initializer_list<std::string>&);
@@ -215,7 +216,7 @@ private:
 };
 
 
-int main()
+int main(int argc, char const *argv[])
 {
     // 1)
     // std::thread clock{Clock("testclock")};
@@ -260,23 +261,67 @@ int main()
     //     std::cout << "value: " << value << std::endl;
     // }
 
-    // 8)
+    // 8) - 15)
+    // TimeMaster master("master", 12, 20, 0);
+    // TimeSlave slave1("slave1", 12, 19, 0);
+    // TimeSlave slave2("slave2", 12, 21, 0);
+
+    // master.set_clock_interval(1000);
+    // master.set_time_monotone(true);
+    // slave1.set_clock_interval(1000);
+    // slave1.set_time_monotone(true);
+    // slave2.set_clock_interval(1000);
+    // slave2.set_time_monotone(true);
+
+    // master.set_channel1(slave1.get_channel()); // master -> slave1
+    // slave1.get_channel()->set_latency(1000); 
+
+    // master.set_channel2(slave2.get_channel()); // master -> slave2
+    // slave2.get_channel()->set_latency(2000);
+
+    // std::thread master_thread(std::ref(master));
+    // std::thread slave1_thread(std::ref(slave1));
+    // std::thread slave2_thread(std::ref(slave2));
+
+    // master_thread.join();
+    // slave1_thread.join();
+    // slave2_thread.join();
+
+    // 16)
+    CLI::App app{"Simulate the berkeley-algo"};
+
+    bool is_monotone = false;
+    unsigned int latency1 = 0;
+    unsigned int latency2 = 0;
+    int slave1_deviation = 0;
+    int slave2_deviation = 0;
+    int master_deviation = 0;
+
+    app.add_flag("--monotone", is_monotone, "set monotone mode");
+    app.add_option("--latency1", latency1, "latency to channel 1 (both directions)");
+    app.add_option("--latency2", latency2, "latency to channel 2 (both directions)");
+    app.add_option("--deviation1", slave1_deviation, "deviation of clock of slave1");
+    app.add_option("--deviation2", slave2_deviation, "deviation of clock of slave2");
+    app.add_option("--deviationm", master_deviation, "deviation of clock of master");
+
+    CLI11_PARSE(app, argc, argv);
+
     TimeMaster master("master", 12, 20, 0);
     TimeSlave slave1("slave1", 12, 19, 0);
     TimeSlave slave2("slave2", 12, 21, 0);
 
-    master.set_clock_interval(1000);
-    master.set_time_monotone(true);
-    slave1.set_clock_interval(1000);
-    slave1.set_time_monotone(true);
-    slave2.set_clock_interval(1000);
-    slave2.set_time_monotone(true);
+    master.set_clock_interval(1000 + master_deviation);
+    master.set_time_monotone(is_monotone);
+    slave1.set_clock_interval(1000 + slave1_deviation);
+    slave1.set_time_monotone(is_monotone);
+    slave2.set_clock_interval(1000 + slave2_deviation);
+    slave2.set_time_monotone(is_monotone);
 
     master.set_channel1(slave1.get_channel()); // master -> slave1
-    slave1.get_channel()->set_latency(1000); 
+    slave1.get_channel()->set_latency(latency1); 
 
     master.set_channel2(slave2.get_channel()); // master -> slave2
-    slave2.get_channel()->set_latency(2000);
+    slave2.get_channel()->set_latency(latency2);
 
     std::thread master_thread(std::ref(master));
     std::thread slave1_thread(std::ref(slave1));
@@ -285,6 +330,7 @@ int main()
     master_thread.join();
     slave1_thread.join();
     slave2_thread.join();
+
 
     return 0;
 }

@@ -42,10 +42,23 @@ public:
     {
     }
 
+
     Channel *get_channel()
     {
         return channel;
     }
+
+
+    void set_clock_interval(long interval)
+    {
+        clock.set_interval(interval);
+    }
+
+    void set_time_monotone(bool set_monotone)
+    {
+        this->is_monotone = set_monotone;
+    }
+
 
     void operator()()
     {
@@ -69,8 +82,20 @@ public:
 
                 this->channel->get_pipe2() << slave_time;
             } else {
-                println({name, "[", std::to_string(clock.to_time()), "]: setting time to ", std::to_string(value), "\n\n"});
-                clock.from_time(value);
+                long slave_time = clock.to_time();
+
+                if (is_monotone && value < slave_time) {
+                    println({name, "[", std::to_string(slave_time), "]: slowing down clock\n\n"});
+                    clock.set_time_monotone(true);
+                } else {
+                    clock.set_time_monotone(false);
+                    clock.from_time(value);
+
+                    if (is_monotone)
+                        println({name, "[", std::to_string(slave_time), "]: time corrected\n\n"});
+                    else
+                        println({name, "[", std::to_string(slave_time), "]: setting time to ", std::to_string(value), "\n\n"});
+                }
             }
         }
 
@@ -81,6 +106,7 @@ private:
     std::string name;
     Clock clock;
     Channel *channel = new Channel();
+    bool is_monotone = false;
 };
 
 class TimeMaster
@@ -99,6 +125,18 @@ public:
     {
         this->channel2 = channel;
     }
+
+
+    void set_clock_interval(long interval)
+    {
+        this->clock.set_interval(interval);
+    }
+
+    void set_time_monotone(bool set_monotone)
+    {
+        this->is_monotone = set_monotone;
+    }
+
 
     void operator()()
     {
@@ -145,7 +183,20 @@ public:
                 " => sending new time to slaves\n\n"
             });
 
-            clock.from_time(newTime);
+            long master_time = clock.to_time();
+            if (is_monotone && newTime < master_time) {
+                println({"master[", std::to_string(master_time), "]: slowing down clock\n\n"});
+                clock.set_time_monotone(true);
+            } else {
+                clock.set_time_monotone(false);
+                clock.from_time(newTime);
+                if (is_monotone)
+                    println({"master[", std::to_string(master_time), "]: time corrected\n\n"});
+                else 
+                    println({"master[", std::to_string(master_time), "]: setting time to ", std::to_string(newTime), "\n\n"});
+
+
+            }
             this->channel1->get_pipe1() << newTime;
             this->channel2->get_pipe1() << newTime;
 
@@ -160,6 +211,7 @@ private:
     Clock clock;
     Channel *channel1;
     Channel *channel2;
+    bool is_monotone = false;
 };
 
 
@@ -209,9 +261,16 @@ int main()
     // }
 
     // 8)
-    TimeMaster master("master", 12, 10, 0);
-    TimeSlave slave1("slave1", 12, 20, 0);
-    TimeSlave slave2("slave2", 12, 30, 0);
+    TimeMaster master("master", 12, 20, 0);
+    TimeSlave slave1("slave1", 12, 19, 0);
+    TimeSlave slave2("slave2", 12, 21, 0);
+
+    master.set_clock_interval(1000);
+    master.set_time_monotone(true);
+    slave1.set_clock_interval(1000);
+    slave1.set_time_monotone(true);
+    slave2.set_clock_interval(1000);
+    slave2.set_time_monotone(true);
 
     master.set_channel1(slave1.get_channel()); // master -> slave1
     slave1.get_channel()->set_latency(1000); 

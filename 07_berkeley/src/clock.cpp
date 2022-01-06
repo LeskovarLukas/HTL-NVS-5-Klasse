@@ -34,16 +34,29 @@ void Clock::from_time(long time_) {
 }
 
 
+void Clock::set_interval(long interval_) {
+    interval = interval_;
+}
+
+void Clock::set_time_monotone(bool set_monotone) {
+    if (set_monotone) {
+        clock_monotone = 2000;
+    } else {
+        clock_monotone = 0;
+    }
+}
+
+
 void Clock::operator()() {
     std::ostringstream buffer;
 
     while (true)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        curr_time += std::chrono::duration<int, std::milli>(1000);
-
         buffer << name << ": " << curr_time << std::endl;
         std::cout << buffer.str() << std::flush;
         buffer.str("");
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(interval + clock_monotone));
+        curr_time += std::chrono::duration<int, std::milli>(1000);
     }
 }

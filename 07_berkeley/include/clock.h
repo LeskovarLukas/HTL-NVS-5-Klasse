@@ -14,9 +14,14 @@ public:
     long to_time();
     void from_time(long);
 
+    void set_interval(long);
+    void set_time_monotone(bool);
+
     void operator()();
 
 private:
     std::string name;
     std::chrono::time_point<std::chrono::system_clock> curr_time;
+    long interval{1000}; // in milliseconds
+    long clock_monotone{0};
 };

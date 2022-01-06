@@ -25,6 +25,15 @@ std::tuple<int, int, int> Clock::get_time() {
 }
 
 
+long Clock::to_time() {
+    return std::chrono::system_clock::to_time_t(curr_time);
+}
+
+void Clock::from_time(long time_) {
+    curr_time = std::chrono::system_clock::from_time_t(time_);
+}
+
+
 void Clock::operator()() {
     std::ostringstream buffer;
 

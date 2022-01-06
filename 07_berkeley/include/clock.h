@@ -11,6 +11,9 @@ public:
     void set_time(int, int, int);
     std::tuple<int, int, int> get_time();
 
+    long to_time();
+    void from_time(long);
+
     void operator()();
 
 private:

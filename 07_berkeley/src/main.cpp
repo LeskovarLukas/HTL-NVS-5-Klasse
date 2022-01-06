@@ -5,6 +5,12 @@
 #include "../include/clock.h"
 #include "../include/pipe.h"
 
+
+void println(const std::initializer_list<std::string>&);
+
+std::mutex print_mtx;
+
+
 class Channel
 {
 public:
@@ -16,6 +22,12 @@ public:
     Pipe<long> &get_pipe2()
     {
         return pipe2;
+    }
+
+    void set_latency(long latency)
+    {
+        pipe1.set_latency(latency);
+        pipe2.set_latency(latency);
     }
 
 private:
@@ -52,11 +64,13 @@ public:
 
         while (pipe >> value) {
             if (value == 0) {
-                this->channel->get_pipe2() << clock.to_time();
-                std::cout << name + ": sent time " + std::to_string(clock.to_time()) + "\n";
+                long slave_time = clock.to_time();
+                println({name, "[", std::to_string(slave_time), "]: sending time\n\n"});
+
+                this->channel->get_pipe2() << slave_time;
             } else {
+                println({name, "[", std::to_string(clock.to_time()), "]: setting time to ", std::to_string(value), "\n\n"});
                 clock.from_time(value);
-                std::cout << name + ": set time to " + std::to_string(value) + "\n";
             }
         }
 
@@ -100,39 +114,42 @@ public:
 
         std::thread clock_thread(std::ref(this->clock));
 
-        long masterTime;
         long slave1Time;
         long slave2Time;
         long newTime;
 
         while (true)
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-
             // send master time to slaves
+            println({"master[", std::to_string(clock.to_time()), "]: requesting time from slaves\n\n"});
             this->channel1->get_pipe1() << 0;
             this->channel2->get_pipe1() << 0;
-            std::cout << "master: sent request to slaves\n";
 
             // wait for slaves to receive time
             this->channel1->get_pipe2() >> slave1Time;
-            std::cout << "master: slave1 time = " + std::to_string(slave1Time) + "\n";
+            println({
+                "master[", std::to_string(clock.to_time()), "]: received time from slave 1 is ", std::to_string(slave1Time), "\n\n"
+            });
 
             this->channel2->get_pipe2() >> slave2Time;
-            std::cout << "master: slave2 time = " + std::to_string(slave2Time) + "\n";
-
-            masterTime = clock.to_time();
+            println({
+                "master[", std::to_string(clock.to_time()), "]: received time from slave 2 is ", std::to_string(slave2Time), "\n\n"
+            });
 
             // calculate adjustment
-            newTime = (slave1Time + slave2Time + masterTime) / 3;
-            std::cout << "master: new time = " + std::to_string(newTime) + "\n";
+            newTime = (slave1Time + slave2Time + clock.to_time()) / 3;
 
             // send new time to slaves
-            this->channel1->get_pipe1() << newTime;
-            this->channel2->get_pipe1() << newTime;
-            std::cout << "master: sent new time to slaves\n";
+            println({
+                "master[", std::to_string(clock.to_time()), "]: new time is ", std::to_string(newTime), 
+                " => sending new time to slaves\n\n"
+            });
 
             clock.from_time(newTime);
+            this->channel1->get_pipe1() << newTime;
+            this->channel2->get_pipe1() << newTime;
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         }
 
         clock_thread.join();
@@ -144,9 +161,6 @@ private:
     Channel *channel1;
     Channel *channel2;
 };
-
-
-void println(const std::initializer_list<std::string>&);
 
 
 int main()
@@ -200,7 +214,10 @@ int main()
     TimeSlave slave2("slave2", 12, 30, 0);
 
     master.set_channel1(slave1.get_channel()); // master -> slave1
+    slave1.get_channel()->set_latency(1000); 
+
     master.set_channel2(slave2.get_channel()); // master -> slave2
+    slave2.get_channel()->set_latency(2000);
 
     std::thread master_thread(std::ref(master));
     std::thread slave1_thread(std::ref(slave1));
@@ -215,6 +232,7 @@ int main()
 
 
 void println(const std::initializer_list<std::string>& text) {
+    //std::lock_guard<std::mutex> lock(print_mtx);
     std::ostringstream buffer;
 
     for (auto& elem : text) {

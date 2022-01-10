@@ -2,6 +2,7 @@
 
 #include <string>
 #include <chrono>
+#include <mutex>
 
 class Clock {
 public:
@@ -24,4 +25,5 @@ private:
     std::chrono::time_point<std::chrono::system_clock> curr_time;
     long interval{1000}; // in milliseconds
     long clock_monotone{0};
+    static std::mutex print_mutex;
 };

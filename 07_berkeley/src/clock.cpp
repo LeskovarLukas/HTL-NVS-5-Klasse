@@ -52,11 +52,14 @@ void Clock::operator()() {
 
     while (true)
     {
-        buffer << name << ": " << curr_time << std::endl;
-        std::cout << buffer.str() << std::flush;
+        std::unique_lock<std::mutex> print_lock(print_mutex);
+        std::cout << name << ": " << curr_time << std::endl;
         buffer.str("");
+        print_lock.unlock();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(interval + clock_monotone));
         curr_time += std::chrono::duration<int, std::milli>(1000);
     }
 }
+
+std::mutex Clock::print_mutex;

@@ -48,13 +48,10 @@ void Clock::set_time_monotone(bool set_monotone) {
 
 
 void Clock::operator()() {
-    std::ostringstream buffer;
-
     while (true)
     {
         std::unique_lock<std::mutex> print_lock(print_mutex);
         std::cout << name << ": " << curr_time << std::endl;
-        buffer.str("");
         print_lock.unlock();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(interval + clock_monotone));

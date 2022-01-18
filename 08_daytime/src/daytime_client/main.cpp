@@ -18,9 +18,14 @@ int main() {
     
     asio::ip::tcp::iostream stream("localhost", "1113");
 
-    std::string line;
-    std::getline(stream, line);
-    std::cout << line << std::endl;
+    if (stream) {
+        std::string line;
+        std::getline(stream, line);
+        std::cout << line << std::endl;
+    }
+    else {
+        std::cerr << "Could not connect to server" << std::endl;
+    }
 
     return 0;
 }

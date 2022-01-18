@@ -9,6 +9,12 @@ thread_dep = dependency('threads')
 # CLI11: https://github.com/CLIUtils/CLI11
 add_global_arguments('-I' + get_option('cli11_include_dir'), language : 'cpp')
 
+# ASIO
+add_global_arguments('-I' + get_option('asio_include_dir'), language : 'cpp')
+
+# SPDLOG
+add_global_arguments('-I' + get_option('spdlog_include_dir'), language : 'cpp')
+
 inc_dir = include_directories('include')
 client_src = ['src/daytime_client/main.cpp']
 server_src = ['src/daytime_server/main.cpp']

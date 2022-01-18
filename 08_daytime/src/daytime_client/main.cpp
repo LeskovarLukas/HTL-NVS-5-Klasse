@@ -27,6 +27,7 @@ int main() {
     else {
         spdlog::error("Could not connect to server");
     }
+    stream.close();
 
     return 0;
 }

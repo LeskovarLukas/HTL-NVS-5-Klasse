@@ -15,16 +15,17 @@ int main() {
     // spdlog::error("Client is running away");
     // spdlog::critical("Client is gone");
 
-    
+    spdlog::set_level(spdlog::level::debug);
     asio::ip::tcp::iostream stream("localhost", "1113");
 
+    spdlog::debug("Atempting connection...");
     if (stream) {
         std::string line;
         std::getline(stream, line);
         std::cout << line << std::endl;
     }
     else {
-        std::cerr << "Could not connect to server" << std::endl;
+        spdlog::error("Could not connect to server");
     }
 
     return 0;

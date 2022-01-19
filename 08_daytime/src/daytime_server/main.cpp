@@ -15,24 +15,34 @@ int main(int argc, char const *argv[]) {
 
     CLI11_PARSE(app, argc, argv);
 
+    spdlog::set_level(spdlog::level::debug);
 
     asio::io_context io_context;
     asio::ip::tcp::endpoint endpoint(asio::ip::tcp::v4(), port);
-    asio::ip::tcp::acceptor acceptor(io_context, endpoint);
 
-    asio::ip::tcp::socket socket(io_context);
-    acceptor.listen();
+    try {
+        spdlog::debug("Starting server...");
+        asio::ip::tcp::acceptor acceptor(io_context, endpoint);
 
-    while (true) {
-        acceptor.accept(socket);
-        asio::ip::tcp::iostream stream{std::move(socket)};
-        if (stream) {
-            stream << std::chrono::system_clock::now() << std::endl;
-        } else {
-            spdlog::error("Client connection failed!");
+        asio::ip::tcp::socket socket(io_context);
+        spdlog::debug("Waiting for connection...");
+        acceptor.listen();
+
+        while (true) {
+            acceptor.accept(socket);
+            asio::ip::tcp::iostream stream{std::move(socket)};
+            spdlog::debug("Connection accepted");
+
+            if (stream) {
+                stream << std::chrono::system_clock::now() << std::endl;
+                spdlog::debug("Response sent");
+                stream.close();
+            } else {
+                spdlog::error("Could not send to client");
+            }
+            stream.close();
         }
-        stream.close();
+    } catch (std::system_error &e) {
+        spdlog::error(e.what());
     }
-
-    acceptor.listen();    
 }

@@ -25,13 +25,23 @@ int main(int argc, char const *argv[]) {
 
 
     spdlog::set_level(spdlog::level::debug);
-    asio::ip::tcp::iostream stream("localhost", std::to_string(port));
 
     spdlog::debug("Atempting connection...");
+    asio::ip::tcp::iostream stream{"localhost", std::to_string(port)};
+    stream.expires_after(std::chrono::seconds(5));
+
     if (stream) {
-        std::string line;
-        std::getline(stream, line);
-        std::cout << line << std::endl;
+        spdlog::debug("Connected");
+        stream << "" << std::endl;
+
+        if (stream) {
+            spdlog::debug("Received response");
+            std::string line;
+            std::getline(stream, line);
+            std::cout << line << std::endl;
+        } else {
+            spdlog::error(stream.error().message());
+        }
     }
     else {
         spdlog::error("Could not connect to server");

@@ -2,8 +2,9 @@
 #include <chrono>
 #include "spdlog/spdlog.h"
 #include "asio/asio.hpp"
+#include "CLI11.hpp"
 
-int main() {
+int main(int argc, char const *argv[]) {
     
     // Sink with color
     // auto console = spdlog::stdout_color_mt("console");	
@@ -15,8 +16,16 @@ int main() {
     // spdlog::error("Client is running away");
     // spdlog::critical("Client is gone");
 
+    CLI::App app{"daytime_client"};
+
+    unsigned int port = 1113;
+    app.add_option("--port", port, "port to connect to");
+
+    CLI11_PARSE(app, argc, argv);
+
+
     spdlog::set_level(spdlog::level::debug);
-    asio::ip::tcp::iostream stream("localhost", "1113");
+    asio::ip::tcp::iostream stream("localhost", std::to_string(port));
 
     spdlog::debug("Atempting connection...");
     if (stream) {

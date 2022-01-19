@@ -19,13 +19,13 @@ inc_dir = include_directories('include')
 client_src = ['src/daytime_client/main.cpp']
 server_src = ['src/daytime_server/main.cpp']
 
-executable('daytime_client',
+executable('client',
            sources : client_src,
            include_directories : inc_dir,
            dependencies : [thread_dep]
 )
 
-executable('daytime_server',
+executable('server',
            sources : server_src,
            include_directories : inc_dir,
            dependencies : [thread_dep]
